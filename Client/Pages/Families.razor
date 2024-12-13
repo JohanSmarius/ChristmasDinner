@@ -1,0 +1,70 @@
+@page "/families"
+
+@inject HttpClient Http
+
+<PageTitle>Families</PageTitle>
+
+<h1>Families</h1>
+
+@if (families == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Town</th>
+                <th>Number of Persons</th>
+                <th>Number of Children</th>
+                <th>Number of Seats</th>
+                <th>Number of Guests</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var family in families)
+            {
+                <tr>
+                    <td>@family.Name</td>
+                    <td>@family.Town</td>
+                    <td>@family.NumberOfPersons</td>
+                    <td>@family.NumberOfChildren</td>
+                    <td>@family.NumberOfSeats</td>
+                    <td>@family.NumberOfGuests</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@code {
+    private List<Family>? families;
+
+    protected override async Task OnInitializedAsync()
+    {
+        families = await Http.GetFromJsonAsync<List<Family>>("api/getfamily");
+    }
+
+    public class Family
+    {
+        public string Id { get; set; } = Guid.NewGuid().ToString();
+        public string Name { get; set; } = string.Empty;
+        public string Town { get; set; } = string.Empty;
+        public int NumberOfPersons { get; set; }
+        public int NumberOfChildren { get; set; }
+        public int NumberOfSeats { get; set; }
+
+        public int NumberOfGuests => Guests.Count;
+
+        public List<Guest> Guests { get; set; } = new List<Guest>();
+    }
+
+    public class Guest
+    {
+        public string Id { get; set; } = Guid.NewGuid().ToString();
+        public string Name { get; set; } = string.Empty;
+        public int Age { get; set; }
+    }
+}

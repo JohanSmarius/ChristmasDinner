@@ -1,0 +1,70 @@
+﻿@page "/addfamily"
+
+@inject HttpClient Http
+
+<PageTitle>Add family</PageTitle>
+
+<h1>Add family</h1>
+
+
+<EditForm Model="@newFamily" OnValidSubmit="HandleValidSubmit">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+
+    <div class="mb-3">
+        <label for="name" class="form-label">Name</label>
+        <InputText id="name" class="form-control" @bind-Value="newFamily.Name" />
+    </div>
+    <div class="mb-3">
+        <label for="town" class="form-label">Town</label>
+        <InputText id="town" class="form-control" @bind-Value="newFamily.Town" />
+    </div>
+    <div class="mb-3">
+        <label for="numberOfPersons" class="form-label">Number of Persons</label>
+        <InputNumber id="numberOfPersons" class="form-control" @bind-Value="newFamily.NumberOfPersons" />
+    </div>
+    <div class="mb-3">
+        <label for="numberOfChildren" class="form-label">Number of Children</label>
+        <InputNumber id="numberOfChildren" class="form-control" @bind-Value="newFamily.NumberOfChildren" />
+    </div>
+
+
+    <div class="mb-3">
+        <label for="numberOfSeats" class="form-label">Number of Seats</label>
+        <InputNumber id="numberOfSeats" class="form-control" @bind-Value="newFamily.NumberOfSeats" />
+    </div>
+    <button type="submit" class="btn btn-primary">Add Family</button>
+</EditForm>
+
+@code {
+    private Family newFamily = new Family();
+
+    protected override async Task OnInitializedAsync()
+    {
+    }
+
+    private async Task HandleValidSubmit()
+    {
+        await Http.PostAsJsonAsync("api/addfamily", newFamily);
+        newFamily = new Family();
+    }
+
+    public class Family
+    {
+        public string Id { get; set; } = Guid.NewGuid().ToString();
+        public string Name { get; set; } = string.Empty;
+        public string Town { get; set; } = string.Empty;
+        public int NumberOfPersons { get; set; }
+        public int NumberOfChildren { get; set; }
+        public int NumberOfSeats { get; set; }
+
+        public List<Guest> Guests { get; set; } = new List<Guest>();
+    }
+
+    public class Guest
+    {
+        public string Id { get; set; } = Guid.NewGuid().ToString();
+        public string Name { get; set; } = string.Empty;
+        public int Age { get; set; }
+    }
+}
