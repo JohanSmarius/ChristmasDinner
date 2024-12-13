@@ -16,7 +16,12 @@ namespace Api.Services
 
         public async Task AddFamilyAsync(Family family)
         {
-            await _container.CreateItemAsync(family, new PartitionKey(family.Id));
+            if (string.IsNullOrEmpty(family.id))
+            {
+                family.id = System.Guid.NewGuid().ToString();
+            }
+
+            await _container.CreateItemAsync(family, new PartitionKey(family.id));
         }
 
         public async Task<IEnumerable<Family>> GetFamiliesAsync()

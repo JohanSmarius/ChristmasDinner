@@ -18,8 +18,9 @@ else
                 <th>Name</th>
                 <th>Town</th>
                 <th>Number of Persons</th>
-                <th>Children</th>
+                <th>Number of Children</th>
                 <th>Number of Seats</th>
+                <th>Number of Guests</th>
             </tr>
         </thead>
         <tbody>
@@ -29,58 +30,21 @@ else
                     <td>@family.Name</td>
                     <td>@family.Town</td>
                     <td>@family.NumberOfPersons</td>
-                    <td>
-                        @foreach (var child in family.Children)
-                        {
-                            <p>@child.Name (@child.Age)</p>
-                        }
-                    </td>
+                    <td>@family.NumberOfChildren</td>
                     <td>@family.NumberOfSeats</td>
+                    <td>@family.NumberOfGuests</td>
                 </tr>
             }
         </tbody>
     </table>
 }
 
-<h2>Add a new family</h2>
-
-<EditForm Model="@newFamily" OnValidSubmit="HandleValidSubmit">
-    <DataAnnotationsValidator />
-    <ValidationSummary />
-
-    <div class="mb-3">
-        <label for="name" class="form-label">Name</label>
-        <InputText id="name" class="form-control" @bind-Value="newFamily.Name" />
-    </div>
-    <div class="mb-3">
-        <label for="town" class="form-label">Town</label>
-        <InputText id="town" class="form-control" @bind-Value="newFamily.Town" />
-    </div>
-    <div class="mb-3">
-        <label for="numberOfPersons" class="form-label">Number of Persons</label>
-        <InputNumber id="numberOfPersons" class="form-control" @bind-Value="newFamily.NumberOfPersons" />
-    </div>
-    <div class="mb-3">
-        <label for="numberOfSeats" class="form-label">Number of Seats</label>
-        <InputNumber id="numberOfSeats" class="form-control" @bind-Value="newFamily.NumberOfSeats" />
-    </div>
-    <button type="submit" class="btn btn-primary">Add Family</button>
-</EditForm>
-
 @code {
     private List<Family>? families;
-    private Family newFamily = new Family();
 
     protected override async Task OnInitializedAsync()
     {
-        families = await Http.GetFromJsonAsync<List<Family>>("api/family");
-    }
-
-    private async Task HandleValidSubmit()
-    {
-        await Http.PostAsJsonAsync("api/family", newFamily);
-        families = await Http.GetFromJsonAsync<List<Family>>("api/family");
-        newFamily = new Family();
+        families = await Http.GetFromJsonAsync<List<Family>>("api/getfamily");
     }
 
     public class Family
@@ -89,12 +53,17 @@ else
         public string Name { get; set; } = string.Empty;
         public string Town { get; set; } = string.Empty;
         public int NumberOfPersons { get; set; }
-        public List<Child> Children { get; set; } = new List<Child>();
+        public int NumberOfChildren { get; set; }
         public int NumberOfSeats { get; set; }
+
+        public int NumberOfGuests => Guests.Count;
+
+        public List<Guest> Guests { get; set; } = new List<Guest>();
     }
 
-    public class Child
+    public class Guest
     {
+        public string Id { get; set; } = Guid.NewGuid().ToString();
         public string Name { get; set; } = string.Empty;
         public int Age { get; set; }
     }
