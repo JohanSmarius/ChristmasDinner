@@ -16,11 +16,21 @@
     </div>
     <div class="mb-3">
         <label for="town" class="form-label">Town</label>
-        <InputText id="town" class="form-control" @bind-Value="newSinglePerson.Town" />
+        <InputText id="town" class="form-control" @bind-Value="newSinglePerson.Town" @onchange="FetchAvailableFamilies" />
     </div>
     <div class="mb-3">
         <label for="age" class="form-label">Age</label>
         <InputNumber id="age" class="form-control" @bind-Value="newSinglePerson.Age" />
+    </div>
+    <div class="mb-3">
+        <label for="family" class="form-label">Family</label>
+        <InputSelect id="family" class="form-control" @bind-Value="selectedFamilyId">
+            <option value="">Select a family</option>
+            @foreach (var family in availableFamilies)
+            {
+                <option value="@family.Id">@family.Name</option>
+            }
+        </InputSelect>
     </div>
     <button type="submit" class="btn btn-primary">Register</button>
 </EditForm>
@@ -42,9 +52,12 @@ else if (registrationAttempted)
     private SinglePerson newSinglePerson = new SinglePerson();
     private Family? matchingFamily;
     private bool registrationAttempted = false;
+    private List<Family> availableFamilies = new List<Family>();
+    private string selectedFamilyId = string.Empty;
 
     private async Task HandleValidSubmit()
     {
+        newSinglePerson.FamilyId = selectedFamilyId;
         var response = await Http.PostAsJsonAsync("api/registersingleperson", newSinglePerson);
         if (response.IsSuccessStatusCode)
         {
@@ -57,12 +70,22 @@ else if (registrationAttempted)
         registrationAttempted = true;
     }
 
+    private async Task FetchAvailableFamilies(ChangeEventArgs e)
+    {
+        var town = e.Value?.ToString();
+        if (!string.IsNullOrEmpty(town))
+        {
+            availableFamilies = await Http.GetFromJsonAsync<List<Family>>($"api/availablefamilies/{town}");
+        }
+    }
+
     public class SinglePerson
     {
         public string Id { get; set; } = Guid.NewGuid().ToString();
         public string Name { get; set; } = string.Empty;
         public string Town { get; set; } = string.Empty;
         public int Age { get; set; }
+        public string FamilyId { get; set; } = string.Empty;
     }
 
     public class Family
