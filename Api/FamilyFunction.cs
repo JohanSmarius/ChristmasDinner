@@ -57,5 +57,31 @@ namespace Api
 
             return new NotFoundResult();
         }
+
+        [Function("ChooseFamily")]
+        public async Task<IActionResult> ChooseFamily([HttpTrigger(AuthorizationLevel.Anonymous, "post")] HttpRequest req)
+        {
+            _logger.LogInformation("C# HTTP trigger function processed a request.");
+            var requestData = await req.ReadFromJsonAsync<ChooseFamilyRequest>();
+
+            var families = await _familyService.GetFamiliesAsync();
+            var chosenFamily = families.FirstOrDefault(f => f.id == requestData.FamilyId);
+
+            if (chosenFamily != null)
+            {
+                chosenFamily.Guests.Add(new Guest { Name = requestData.SinglePerson.Name, Age = requestData.SinglePerson.Age });
+                chosenFamily.NumberOfSeats -= 1;
+                await _familyService.AddFamilyAsync(chosenFamily);
+                return new OkObjectResult(chosenFamily);
+            }
+
+            return new NotFoundResult();
+        }
+    }
+
+    public class ChooseFamilyRequest
+    {
+        public string FamilyId { get; set; }
+        public SinglePerson SinglePerson { get; set; }
     }
 }

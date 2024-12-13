@@ -22,37 +22,63 @@
         <label for="age" class="form-label">Age</label>
         <InputNumber id="age" class="form-control" @bind-Value="newSinglePerson.Age" />
     </div>
+    <div class="mb-3">
+        <label for="family" class="form-label">Choose Family</label>
+        <InputSelect id="family" class="form-control" @bind-Value="chosenFamilyId">
+            <option value="">Select a family</option>
+            @foreach (var family in availableFamilies)
+            {
+                <option value="@family.Id">@family.Name (@family.Town)</option>
+            }
+        </InputSelect>
+    </div>
     <button type="submit" class="btn btn-primary">Register</button>
 </EditForm>
 
-@if (matchingFamily != null)
+@if (registrationAttempted)
 {
-    <h2>Possible Match</h2>
-    <p>Family Name: @matchingFamily.Name</p>
-    <p>Town: @matchingFamily.Town</p>
-    <p>Number of Seats: @matchingFamily.NumberOfSeats</p>
-    <p>Number of Guests: @matchingFamily.Guests.Count</p>
-}
-else if (registrationAttempted)
-{
-    <p>No matching family found in your town.</p>
+    if (chosenFamily != null)
+    {
+        <h2>Chosen Family</h2>
+        <p>Family Name: @chosenFamily.Name</p>
+        <p>Town: @chosenFamily.Town</p>
+        <p>Number of Seats: @chosenFamily.NumberOfSeats</p>
+        <p>Number of Guests: @chosenFamily.Guests.Count</p>
+    }
+    else
+    {
+        <p>No matching family found in your town.</p>
+    }
 }
 
 @code {
     private SinglePerson newSinglePerson = new SinglePerson();
-    private Family? matchingFamily;
+    private List<Family> availableFamilies = new List<Family>();
+    private string chosenFamilyId = string.Empty;
+    private Family? chosenFamily;
     private bool registrationAttempted = false;
+
+    protected override async Task OnInitializedAsync()
+    {
+        availableFamilies = await Http.GetFromJsonAsync<List<Family>>("api/getavailablefamilies");
+    }
 
     private async Task HandleValidSubmit()
     {
-        var response = await Http.PostAsJsonAsync("api/registersingleperson", newSinglePerson);
+        var requestData = new ChooseFamilyRequest
+        {
+            FamilyId = chosenFamilyId,
+            SinglePerson = newSinglePerson
+        };
+
+        var response = await Http.PostAsJsonAsync("api/choosefamily", requestData);
         if (response.IsSuccessStatusCode)
         {
-            matchingFamily = await response.Content.ReadFromJsonAsync<Family>();
+            chosenFamily = await response.Content.ReadFromJsonAsync<Family>();
         }
         else
         {
-            matchingFamily = null;
+            chosenFamily = null;
         }
         registrationAttempted = true;
     }
@@ -79,5 +105,11 @@ else if (registrationAttempted)
         public string Id { get; set; } = Guid.NewGuid().ToString();
         public string Name { get; set; } = string.Empty;
         public int Age { get; set; }
+    }
+
+    public class ChooseFamilyRequest
+    {
+        public string FamilyId { get; set; } = string.Empty;
+        public SinglePerson SinglePerson { get; set; } = new SinglePerson();
     }
 }
