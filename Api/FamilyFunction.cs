@@ -20,6 +20,19 @@ namespace Api
             _familyService = familyService;
         }
 
+        // Create a new function named GetFamiliesByTown with an HttpTrigger attribute and the type of get. The town is passsed as a query parameter.
+        // The function should return a list of families that have available seats in the town specified.
+        [Function("GetFamiliesByTown")]
+        public async Task<IActionResult> GetFamiliesByTown([HttpTrigger(AuthorizationLevel.Anonymous, "get")] HttpRequest req)
+        {
+            _logger.LogInformation("C# HTTP trigger function processed a request.");
+            var town = req.Query["town"];
+            var families = await _familyService.GetAvailableFamiliesAsync(town);
+            return new OkObjectResult(families);
+        }
+
+
+
         [Function("GetFamily")]
         public async Task<IActionResult> GetFamily([HttpTrigger(AuthorizationLevel.Anonymous, "get")] HttpRequest req)
         {
