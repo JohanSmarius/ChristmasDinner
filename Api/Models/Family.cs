@@ -10,9 +10,16 @@ namespace Api.Models
         public int NumberOfPersons { get; set; }
         public int NumberOfChildren { get; set; }
         public int NumberOfSeats { get; set; }
+        public List<Guest> Guests { get; set; } = new List<Guest>();
     }
 
     public class Child
+    {
+        public string Name { get; set; }
+        public int Age { get; set; }
+    }
+
+    public class Guest
     {
         public string Name { get; set; }
         public int Age { get; set; }

@@ -1,0 +1,48 @@
+@page "/addsingleperson"
+
+@inject HttpClient Http
+
+<PageTitle>Add Single Person</PageTitle>
+
+<h1>Add Single Person</h1>
+
+<EditForm Model="@newSinglePerson" OnValidSubmit="HandleValidSubmit">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+
+    <div class="mb-3">
+        <label for="name" class="form-label">Name</label>
+        <InputText id="name" class="form-control" @bind-Value="newSinglePerson.Name" />
+    </div>
+    <div class="mb-3">
+        <label for="town" class="form-label">Town</label>
+        <InputText id="town" class="form-control" @bind-Value="newSinglePerson.Town" />
+    </div>
+    <div class="mb-3">
+        <label for="age" class="form-label">Age</label>
+        <InputNumber id="age" class="form-control" @bind-Value="newSinglePerson.Age" />
+    </div>
+    <button type="submit" class="btn btn-primary">Add Single Person</button>
+</EditForm>
+
+@code {
+    private SinglePerson newSinglePerson = new SinglePerson();
+
+    protected override async Task OnInitializedAsync()
+    {
+    }
+
+    private async Task HandleValidSubmit()
+    {
+        await Http.PostAsJsonAsync("api/addsingleperson", newSinglePerson);
+        newSinglePerson = new SinglePerson();
+    }
+
+    public class SinglePerson
+    {
+        public string Id { get; set; } = Guid.NewGuid().ToString();
+        public string Name { get; set; } = string.Empty;
+        public string Town { get; set; } = string.Empty;
+        public int Age { get; set; }
+    }
+}

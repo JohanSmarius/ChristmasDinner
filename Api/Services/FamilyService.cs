@@ -21,8 +21,9 @@ namespace Api.Services
                 family.id = System.Guid.NewGuid().ToString();
             }
 
-            await _container.CreateItemAsync(family, new PartitionKey(family.id));
+            await _container.UpsertItemAsync(family, new PartitionKey(family.id));
         }
+
 
         public async Task<IEnumerable<Family>> GetFamiliesAsync()
         {

@@ -5,6 +5,7 @@ using Microsoft.Extensions.Logging;
 using System.Threading.Tasks;
 using Api.Models;
 using Api.Services;
+using System.Linq;
 
 namespace Api
 {
@@ -34,6 +35,27 @@ namespace Api
             var family = await req.ReadFromJsonAsync<Family>();
             await _familyService.AddFamilyAsync(family);
             return new OkResult();
+        }
+
+        [Function("RegisterSinglePerson")]
+        public async Task<IActionResult> RegisterSinglePerson([HttpTrigger(AuthorizationLevel.Anonymous, "post")] HttpRequest req)
+        {
+            _logger.LogInformation("C# HTTP trigger function processed a request.");
+            var singlePerson = await req.ReadFromJsonAsync<SinglePerson>();
+
+            var families = await _familyService.GetFamiliesAsync();
+            var matchingFamilies = families.Where(f => f.Town == singlePerson.Town && f.Guests.Count < f.NumberOfSeats).ToList();
+
+            if (matchingFamilies.Any())
+            {
+                var family = matchingFamilies.First();
+                family.Guests.Add(new Guest { Name = singlePerson.Name, Age = singlePerson.Age });
+                family.NumberOfSeats -= 1;
+                await _familyService.AddFamilyAsync(family);
+                return new OkObjectResult(family);
+            }
+
+            return new NotFoundResult();
         }
     }
 }
