@@ -15,8 +15,8 @@ builder.Services
 
 builder.Services.AddSingleton(s =>
 {
-    var cosmosClient = new CosmosClient("Your-CosmosDB-Connection-String");
-    return new FamilyService(cosmosClient, "Your-Database-Name", "Your-Container-Name");
+    var cosmosClient = new CosmosClient("AccountEndpoint=https://festivecalendar.documents.azure.com:443/;AccountKey=MOqWoCM42A7ZqrL7UN5ZydezLnqHEcM4pAnxarufvjmoC4P7K1sMhDGIgHNycXXyfadFGcYzWo9iACDbqUK8Hg==;");
+    return new FamilyService(cosmosClient, "ToDoList", "Items");
 });
 
 builder.Build().Run();
