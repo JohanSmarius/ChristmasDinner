@@ -16,12 +16,13 @@
     </div>
     <div class="mb-3">
         <label for="town" class="form-label">Town</label>
-        <InputText id="town" class="form-control" @bind-Value="newSinglePerson.Town" @onchange="FetchAvailableFamilies" />
+        <InputText id="town" class="form-control" @bind-Value="newSinglePerson.Town" />
     </div>
     <div class="mb-3">
         <label for="age" class="form-label">Age</label>
         <InputNumber id="age" class="form-control" @bind-Value="newSinglePerson.Age" />
     </div>
+    <button type="button" class="btn btn-secondary" @onclick="FetchAvailableFamilies">Find Families</button>
     <div class="mb-3">
         <label for="family" class="form-label">Family</label>
         <InputSelect id="family" class="form-control" @bind-Value="selectedFamilyId">
@@ -70,12 +71,11 @@ else if (registrationAttempted)
         registrationAttempted = true;
     }
 
-    private async Task FetchAvailableFamilies(ChangeEventArgs e)
+    private async Task FetchAvailableFamilies()
     {
-        var town = e.Value?.ToString();
-        if (!string.IsNullOrEmpty(town))
+        if (!string.IsNullOrEmpty(newSinglePerson.Town))
         {
-            availableFamilies = await Http.GetFromJsonAsync<List<Family>>($"api/availablefamilies/{town}");
+            availableFamilies = await Http.GetFromJsonAsync<List<Family>>($"api/availablefamilies/{newSinglePerson.Town}");
         }
     }
 
