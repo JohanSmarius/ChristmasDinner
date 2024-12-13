@@ -57,15 +57,14 @@ namespace Api
             var singlePerson = await req.ReadFromJsonAsync<SinglePerson>();
 
             var families = await _familyService.GetFamiliesAsync();
-            var matchingFamilies = families.Where(f => f.Town == singlePerson.Town && f.Guests.Count < f.NumberOfSeats).ToList();
+            var matchingFamily = families.SingleOrDefault(f => f.id == singlePerson.FamilyId);
 
-            if (matchingFamilies.Any())
+            if (matchingFamily is not null)
             {
-                var family = matchingFamilies.First();
-                family.Guests.Add(new Guest { Name = singlePerson.Name, Age = singlePerson.Age });
-                family.NumberOfSeats -= 1;
-                await _familyService.AddFamilyAsync(family);
-                return new OkObjectResult(family);
+                matchingFamily.Guests.Add(new Guest { Name = singlePerson.Name, Age = singlePerson.Age });
+                matchingFamily.NumberOfSeats -= 1;
+                await _familyService.AddFamilyAsync(matchingFamily);
+                return new OkObjectResult(matchingFamily);
             }
 
             return new NotFoundResult();

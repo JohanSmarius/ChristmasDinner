@@ -19,10 +19,10 @@ builder.Services.AddSingleton(s =>
     return new FamilyService(cosmosClient, "ChristmasParty", "Families");
 });
 
-builder.Services.AddSingleton(s =>
-{
-    var cosmosClient = new CosmosClient("AccountEndpoint=https://festivecalendar.documents.azure.com:443/;AccountKey=MOqWoCM42A7ZqrL7UN5ZydezLnqHEcM4pAnxarufvjmoC4P7K1sMhDGIgHNycXXyfadFGcYzWo9iACDbqUK8Hg==;");
-    return new SinglePersonService(cosmosClient, "ChristmasParty", "Guests");
-});
+//builder.Services.AddSingleton(s =>
+//{
+//    var cosmosClient = new CosmosClient("AccountEndpoint=https://festivecalendar.documents.azure.com:443/;AccountKey=MOqWoCM42A7ZqrL7UN5ZydezLnqHEcM4pAnxarufvjmoC4P7K1sMhDGIgHNycXXyfadFGcYzWo9iACDbqUK8Hg==;");
+//    return new SinglePersonService(cosmosClient, "ChristmasParty", "Guests");
+//});
 
 builder.Build().Run();

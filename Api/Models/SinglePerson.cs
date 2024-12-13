@@ -6,5 +6,7 @@ namespace Api.Models
         public string Name { get; set; }
         public string Town { get; set; }
         public int Age { get; set; }
+
+        public string FamilyId { get; set; }
     }
 }
