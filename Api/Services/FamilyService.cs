@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.Azure.Cosmos;
 using Api.Models;
+using System.Linq;
 
 namespace Api.Services
 {
@@ -24,7 +25,6 @@ namespace Api.Services
             await _container.UpsertItemAsync(family, new PartitionKey(family.id));
         }
 
-
         public async Task<IEnumerable<Family>> GetFamiliesAsync()
         {
             var query = _container.GetItemQueryIterator<Family>();
@@ -35,6 +35,12 @@ namespace Api.Services
                 results.AddRange(response);
             }
             return results;
+        }
+
+        public async Task<IEnumerable<Family>> GetAvailableFamiliesAsync()
+        {
+            var families = await GetFamiliesAsync();
+            return families.Where(f => f.NumberOfSeats > 0);
         }
     }
 }
