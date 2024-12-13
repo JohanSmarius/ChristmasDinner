@@ -1,0 +1,83 @@
+@page "/registersingleperson"
+
+@inject HttpClient Http
+
+<PageTitle>Register Single Person</PageTitle>
+
+<h1>Register Single Person</h1>
+
+<EditForm Model="@newSinglePerson" OnValidSubmit="HandleValidSubmit">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+
+    <div class="mb-3">
+        <label for="name" class="form-label">Name</label>
+        <InputText id="name" class="form-control" @bind-Value="newSinglePerson.Name" />
+    </div>
+    <div class="mb-3">
+        <label for="town" class="form-label">Town</label>
+        <InputText id="town" class="form-control" @bind-Value="newSinglePerson.Town" />
+    </div>
+    <div class="mb-3">
+        <label for="age" class="form-label">Age</label>
+        <InputNumber id="age" class="form-control" @bind-Value="newSinglePerson.Age" />
+    </div>
+    <button type="submit" class="btn btn-primary">Register</button>
+</EditForm>
+
+@if (matchingFamily != null)
+{
+    <h2>Possible Match</h2>
+    <p>Family Name: @matchingFamily.Name</p>
+    <p>Town: @matchingFamily.Town</p>
+    <p>Number of Seats: @matchingFamily.NumberOfSeats</p>
+    <p>Number of Guests: @matchingFamily.Guests.Count</p>
+}
+else if (registrationAttempted)
+{
+    <p>No matching family found in your town.</p>
+}
+
+@code {
+    private SinglePerson newSinglePerson = new SinglePerson();
+    private Family? matchingFamily;
+    private bool registrationAttempted = false;
+
+    private async Task HandleValidSubmit()
+    {
+        var response = await Http.PostAsJsonAsync("api/registersingleperson", newSinglePerson);
+        if (response.IsSuccessStatusCode)
+        {
+            matchingFamily = await response.Content.ReadFromJsonAsync<Family>();
+        }
+        else
+        {
+            matchingFamily = null;
+        }
+        registrationAttempted = true;
+    }
+
+    public class SinglePerson
+    {
+        public string Id { get; set; } = Guid.NewGuid().ToString();
+        public string Name { get; set; } = string.Empty;
+        public string Town { get; set; } = string.Empty;
+        public int Age { get; set; }
+    }
+
+    public class Family
+    {
+        public string Id { get; set; } = Guid.NewGuid().ToString();
+        public string Name { get; set; } = string.Empty;
+        public string Town { get; set; } = string.Empty;
+        public int NumberOfSeats { get; set; }
+        public List<Guest> Guests { get; set; } = new List<Guest>();
+    }
+
+    public class Guest
+    {
+        public string Id { get; set; } = Guid.NewGuid().ToString();
+        public string Name { get; set; } = string.Empty;
+        public int Age { get; set; }
+    }
+}
