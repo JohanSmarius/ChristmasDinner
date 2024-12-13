@@ -1,0 +1,1 @@
+Some people are alone during the Christmas season. Let's build an app to match families welcoming an extra person at their Christmas table with people looking for company. We will use Blazor WASM and Azure Static Web Apps in combination with Azure Functions and CosmosDB for the app. Perhaps an additional .NET component will be added to the party, but that will remain a surprise.
