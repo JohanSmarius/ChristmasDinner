@@ -16,12 +16,12 @@ namespace Api.Services
 
         public async Task AddSinglePersonAsync(SinglePerson singlePerson)
         {
-            if (string.IsNullOrEmpty(singlePerson.Id))
+            if (string.IsNullOrEmpty(singlePerson.id))
             {
-                singlePerson.Id = System.Guid.NewGuid().ToString();
+                singlePerson.id = System.Guid.NewGuid().ToString();
             }
 
-            await _container.CreateItemAsync(singlePerson, new PartitionKey(singlePerson.Id));
+            await _container.CreateItemAsync(singlePerson, new PartitionKey(singlePerson.id));
         }
 
         public async Task<IEnumerable<SinglePerson>> GetSinglePersonsAsync()

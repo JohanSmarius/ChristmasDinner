@@ -50,6 +50,7 @@ namespace Api
             {
                 var family = matchingFamilies.First();
                 family.Guests.Add(new Guest { Name = singlePerson.Name, Age = singlePerson.Age });
+                family.NumberOfSeats -= 1;
                 await _familyService.AddFamilyAsync(family);
                 return new OkObjectResult(family);
             }
