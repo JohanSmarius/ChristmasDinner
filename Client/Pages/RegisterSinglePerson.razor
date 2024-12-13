@@ -75,7 +75,7 @@ else if (registrationAttempted)
     {
         if (!string.IsNullOrEmpty(newSinglePerson.Town))
         {
-            availableFamilies = await Http.GetFromJsonAsync<List<Family>>($"api/GetAvailableFamiliesAsync/{newSinglePerson.Town}");
+            availableFamilies = await Http.GetFromJsonAsync<List<Family>>($"api/GetFamiliesByTown?town={newSinglePerson.Town}");
         }
     }
 
@@ -104,4 +104,4 @@ else if (registrationAttempted)
         public int Age { get; set; }
     }
 }
-}
+
