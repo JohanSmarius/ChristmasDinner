@@ -24,10 +24,21 @@ namespace Api.Services
             await _container.UpsertItemAsync(family, new PartitionKey(family.id));
         }
 
-
         public async Task<IEnumerable<Family>> GetFamiliesAsync()
         {
             var query = _container.GetItemQueryIterator<Family>();
+            var results = new List<Family>();
+            while (query.HasMoreResults)
+            {
+                var response = await query.ReadNextAsync();
+                results.AddRange(response);
+            }
+            return results;
+        }
+
+        public async Task<IEnumerable<Family>> GetAvailableFamiliesAsync(string town)
+        {
+            var query = _container.GetItemQueryIterator<Family>($"SELECT * FROM c WHERE c.Town = '{town}' AND c.NumberOfSeats > 0");
             var results = new List<Family>();
             while (query.HasMoreResults)
             {
