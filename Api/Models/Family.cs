@@ -13,12 +13,6 @@ namespace Api.Models
         public List<Guest> Guests { get; set; } = new List<Guest>();
     }
 
-    public class Child
-    {
-        public string Name { get; set; }
-        public int Age { get; set; }
-    }
-
     public class Guest
     {
         public string Name { get; set; }
