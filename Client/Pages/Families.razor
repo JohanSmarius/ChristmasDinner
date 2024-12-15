@@ -2,6 +2,8 @@
 
 @inject HttpClient Http
 
+@using Shared.Models
+
 <PageTitle>Families</PageTitle>
 
 <h1>Families</h1>
@@ -32,7 +34,7 @@ else
                     <td>@family.NumberOfPersons</td>
                     <td>@family.NumberOfChildren</td>
                     <td>@family.NumberOfSeats</td>
-                    <td>@family.NumberOfGuests</td>
+                    <td>@family.Guests.Count</td>
                 </tr>
             }
         </tbody>
@@ -45,26 +47,5 @@ else
     protected override async Task OnInitializedAsync()
     {
         families = await Http.GetFromJsonAsync<List<Family>>("api/getfamily");
-    }
-
-    public class Family
-    {
-        public string Id { get; set; } = Guid.NewGuid().ToString();
-        public string Name { get; set; } = string.Empty;
-        public string Town { get; set; } = string.Empty;
-        public int NumberOfPersons { get; set; }
-        public int NumberOfChildren { get; set; }
-        public int NumberOfSeats { get; set; }
-
-        public int NumberOfGuests => Guests.Count;
-
-        public List<Guest> Guests { get; set; } = new List<Guest>();
-    }
-
-    public class Guest
-    {
-        public string Id { get; set; } = Guid.NewGuid().ToString();
-        public string Name { get; set; } = string.Empty;
-        public int Age { get; set; }
     }
 }

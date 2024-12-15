@@ -2,6 +2,8 @@
 
 @inject HttpClient Http
 
+@using Shared.Models
+
 <PageTitle>Register Single Person</PageTitle>
 
 <h1>Register Single Person</h1>
@@ -29,7 +31,7 @@
             <option value="">Select a family</option>
             @foreach (var family in availableFamilies)
             {
-                <option value="@family.Id">@family.Name</option>
+                <option value="@family.id">@family.Name</option>
             }
         </InputSelect>
     </div>
@@ -78,30 +80,4 @@ else if (registrationAttempted)
             availableFamilies = await Http.GetFromJsonAsync<List<Family>>($"api/GetFamiliesByTown?town={newSinglePerson.Town}");
         }
     }
-
-    public class SinglePerson
-    {
-        public string Id { get; set; } = Guid.NewGuid().ToString();
-        public string Name { get; set; } = string.Empty;
-        public string Town { get; set; } = string.Empty;
-        public int Age { get; set; }
-        public string FamilyId { get; set; } = string.Empty;
-    }
-
-    public class Family
-    {
-        public string Id { get; set; } = Guid.NewGuid().ToString();
-        public string Name { get; set; } = string.Empty;
-        public string Town { get; set; } = string.Empty;
-        public int NumberOfSeats { get; set; }
-        public List<Guest> Guests { get; set; } = new List<Guest>();
-    }
-
-    public class Guest
-    {
-        public string Id { get; set; } = Guid.NewGuid().ToString();
-        public string Name { get; set; } = string.Empty;
-        public int Age { get; set; }
-    }
 }
-

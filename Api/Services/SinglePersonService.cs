@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.Azure.Cosmos;
-using Api.Models;
+using Shared.Models;
 
 namespace Api.Services
 {
