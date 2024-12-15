@@ -28,11 +28,10 @@ namespace Api
         {
             _logger.LogInformation("C# HTTP trigger function processed a request.");
             var town = req.Query["town"];
-            var families = await _familyService.GetAvailableFamiliesAsync(town);
+            var ignoreChildren = bool.TryParse(req.Query["ignoreChildren"], out var ignore) && ignore;
+            var families = await _familyService.GetAvailableFamiliesAsync(town, ignoreChildren);
             return new OkObjectResult(families);
         }
-
-
 
         [Function("GetFamily")]
         public async Task<IActionResult> GetFamily([HttpTrigger(AuthorizationLevel.Anonymous, "get")] HttpRequest req)

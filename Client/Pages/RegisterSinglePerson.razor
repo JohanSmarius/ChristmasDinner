@@ -24,6 +24,12 @@
         <label for="age" class="form-label">Age</label>
         <InputNumber id="age" class="form-control" @bind-Value="newSinglePerson.Age" />
     </div>
+    <div class="form-check">
+        <input class="form-check-input" type="checkbox" id="ignoreChildren" @bind="ignoreChildren">
+        <label class="form-check-label" for="ignoreChildren">
+            Ignore families with children
+        </label>
+    </div>
     <button type="button" class="btn btn-secondary" @onclick="FetchAvailableFamilies">Find Families</button>
     <div class="mb-3">
         <label for="family" class="form-label">Family</label>
@@ -57,6 +63,7 @@ else if (registrationAttempted)
     private bool registrationAttempted = false;
     private List<Family> availableFamilies = new List<Family>();
     private string selectedFamilyId = string.Empty;
+    private bool ignoreChildren = false;
 
     private async Task HandleValidSubmit()
     {
@@ -77,7 +84,7 @@ else if (registrationAttempted)
     {
         if (!string.IsNullOrEmpty(newSinglePerson.Town))
         {
-            availableFamilies = await Http.GetFromJsonAsync<List<Family>>($"api/GetFamiliesByTown?town={newSinglePerson.Town}");
+            availableFamilies = await Http.GetFromJsonAsync<List<Family>>($"api/GetFamiliesByTown?town={newSinglePerson.Town}&ignoreChildren={ignoreChildren}");
         }
     }
 }

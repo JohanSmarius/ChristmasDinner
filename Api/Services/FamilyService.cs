@@ -36,9 +36,15 @@ namespace Api.Services
             return results;
         }
 
-        public async Task<IEnumerable<Family>> GetAvailableFamiliesAsync(string town)
+        public async Task<IEnumerable<Family>> GetAvailableFamiliesAsync(string town, bool ignoreChildren)
         {
-            var query = _container.GetItemQueryIterator<Family>($"SELECT * FROM c WHERE c.Town = '{town}' AND c.NumberOfSeats > 0");
+            var queryText = $"SELECT * FROM c WHERE c.Town = '{town}' AND c.NumberOfSeats > 0";
+            if (ignoreChildren)
+            {
+                queryText += " AND c.NumberOfChildren = 0";
+            }
+
+            var query = _container.GetItemQueryIterator<Family>(queryText);
             var results = new List<Family>();
             while (query.HasMoreResults)
             {
