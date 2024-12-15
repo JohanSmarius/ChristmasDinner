@@ -3,9 +3,9 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.Functions.Worker;
 using Microsoft.Extensions.Logging;
 using System.Threading.Tasks;
-using Api.Models;
 using Api.Services;
 using System.Linq;
+using Shared.Models;
 
 namespace Api
 {
