@@ -8,6 +8,13 @@
 
 <h1>Families</h1>
 
+<div class="form-check">
+    <input class="form-check-input" type="checkbox" id="ignoreChildren" @bind="ignoreChildren">
+    <label class="form-check-label" for="ignoreChildren">
+        Ignore families with children
+    </label>
+</div>
+
 @if (families == null)
 {
     <p><em>Loading...</em></p>
@@ -43,9 +50,16 @@ else
 
 @code {
     private List<Family>? families;
+    private bool ignoreChildren = false;
 
     protected override async Task OnInitializedAsync()
     {
-        families = await Http.GetFromJsonAsync<List<Family>>("api/getfamily");
+        families = await FetchFamilies();
+    }
+
+    private async Task<List<Family>> FetchFamilies()
+    {
+        var query = $"api/getfamily?ignoreChildren={ignoreChildren}";
+        return await Http.GetFromJsonAsync<List<Family>>(query);
     }
 }
